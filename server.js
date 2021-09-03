@@ -1,5 +1,6 @@
 const express = require('express');
 const connectDB = require('./config/db');
+const morgan = require('morgan');
 
 const app = express();
 
@@ -7,11 +8,46 @@ const app = express();
 
 connectDB();
 
+//Logging
+app.use(
+  morgan('dev', {
+    skip: function (req, res) {
+      return res.statusCode < 400;
+    },
+    stream: process.stderr,
+  })
+);
+
+app.use(
+  morgan('dev', {
+    skip: function (req, res) {
+      return res.statusCode >= 400;
+    },
+    stream: process.stdout,
+  })
+);
+
 // Init middleware
 app.use(express.json({ extended: false }));
 
 app.get('/', (req, res) => res.send('API Running'));
+app.use(
+  morgan('dev', {
+    skip: function (req, res) {
+      return res.statusCode < 400;
+    },
+    stream: process.stderr,
+  })
+);
 
+app.use(
+  morgan('dev', {
+    skip: function (req, res) {
+      return res.statusCode >= 400;
+    },
+    stream: process.stdout,
+  })
+);
 //Define routes
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
