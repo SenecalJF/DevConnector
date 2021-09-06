@@ -92,6 +92,8 @@ export const login = (email, password) => async (dispatch) => {
 
     if (errors) {
       errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+    } else {
+      dispatch(setAlert('Passwords do not match the email', 'danger'));
     }
 
     dispatch({
